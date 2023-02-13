@@ -2,27 +2,40 @@ const fs = require("fs").promises;
 const path = require("path");
 const contactsPath = path.resolve("./db/contacts.json");
 
+const readContacts = async () => { 
+    const data = await fs.readFile(contactsPath, "utf8");
+    const dataParse = JSON.parse(data);
+    return dataParse;
+}
+
 const listContacts = async () =>{
   try {
-    const data = await fs.readFile(contactsPath);
-    return result = JSON.parse(data);
-
+    const contactsList = await readContacts();
+    return contactsList;
   } catch (error) {
     console.error(error.message);
   }
 }
 
+const getContactById = async (contactId) => {
+  try {
+    const contact = await readContacts();
+    return (result = contact.filter((e) => e.id == contactId));
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
 const addContact = async (name, email, phone) => {
   try {
-    const data = await fs.readFile(contactsPath);
-    const contacts = JSON.parse(data);
+    const contact = await readContacts();
     const newContact = {
       id: Math.random(),
       name,
       email,
       phone,
     };
-    const contactsList = JSON.stringify([newContact, ...contacts], null, "\t");
+    const contactsList = JSON.stringify([newContact, ...contact], null, "\t");
     await fs.writeFile(contactsPath, contactsList);
     return newContact;
   } catch (error) {
@@ -30,28 +43,17 @@ const addContact = async (name, email, phone) => {
   }
 }
 
-const getContactById = async (contactId) =>{
-  try {
-    const data = await fs.readFile(contactsPath);
-    return result = JSON.parse(data).find((data) => data.id == contactId);
-  } catch (error) {
-    console.error(error.message);
-  }
-}
+
 
 const removeContact = async (contactId)=>{
   try {
-    const data = await fs.readFile(contactsPath);
-    const contacts = JSON.parse(data);
-    const index = await contacts.findIndex((e) => e.id === contactId);
-    if (index === -1) {
-      return null;
-    }
-    const removedContact = contacts.splice(index, 1);
-    fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-    return removedContact;
+    const contact = await readContacts();
+    const remContact = contact.filter(
+      (contact) => contact.id !== contactId
+    );
+    await fs.writeFile(contactsPath, JSON.stringify(remContact));
   } catch (error) {
-    console.error(error.message);
+    console.log(error.message);
   }
 }
 
