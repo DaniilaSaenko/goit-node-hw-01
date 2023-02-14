@@ -1,5 +1,7 @@
 const fs = require("fs").promises;
 const path = require("path");
+
+
 const contactsPath = path.resolve("./db/contacts.json");
 
 const readContacts = async () => { 
@@ -30,7 +32,7 @@ const addContact = async (name, email, phone) => {
   try {
     const contact = await readContacts();
     const newContact = {
-      id: Math.random(),
+      id: String(Math.random()),
       name,
       email,
       phone,
