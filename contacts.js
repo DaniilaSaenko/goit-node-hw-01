@@ -32,7 +32,7 @@ const addContact = async (name, email, phone) => {
   try {
     const contact = await readContacts();
     const newContact = {
-      id: String(Math.random()),
+      id: Date.now().toString(),
       name,
       email,
       phone,
